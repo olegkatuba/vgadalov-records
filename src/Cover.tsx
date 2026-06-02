@@ -7,7 +7,7 @@ import React, { useContext, useEffect, useRef, type JSX } from 'react'
 import { useGLTF, useAnimations, useBounds, Html, Text } from '@react-three/drei'
 import type { GLTF } from 'three-stdlib'
 import type { ThreeEvent } from '@react-three/fiber'
-import { FocusContext } from './App'
+import { FocusContext } from './FocusContext'
 
 type GLTFResult = GLTF & {
     nodes: {

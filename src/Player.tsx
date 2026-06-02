@@ -6,7 +6,7 @@ import { VinylRecord } from "./VinylRecord";
 import { useContext, useEffect, useMemo, useRef, useState, type Ref } from "react";
 import { Turntable } from "./Turntable";
 import { Group, Object3D, Sphere, Vector3, type Mesh, type PerspectiveCamera as PerspectiveCameraType } from "three";
-import { ControlsContext, FocusContext } from "./App";
+import { FocusContext } from "./FocusContext";
 
 export enum VinylRecordPosition {
   Home,
@@ -108,7 +108,7 @@ export default function PLayer({ recordsInfo }: PLayerProps) {
 
   const { raycaster, camera, pointer, scene } = useThree();
 
-  const { enabled, setEnabled } = useContext(ControlsContext);
+  // const { enabled, setEnabled } = useContext(ControlsContext);
 
   const handlePointerDown = (e: ThreeEvent<PointerEvent>, i: number) => {
     e.target.setPointerCapture(e.pointerId);

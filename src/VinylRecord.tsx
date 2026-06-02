@@ -5,11 +5,11 @@ import { Selection, Select, EffectComposer, Bloom } from '@react-three/postproce
 import type { GLTF } from 'three-stdlib'
 import { forwardRef, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import type { MutableRefObject, Ref, RefObject } from 'react';
-import { ControlsContext } from './App';
 import './VinylRecord.css'
 import { useFrame, useThree, type ThreeElements, type ThreeEvent } from '@react-three/fiber';
 import { easing } from 'maath';
 import { VinylRecordRotation, type Record, type RecordSide } from './Player';
+import { ControlsContext } from './ControlsContext';
 
 const MAX_RADIUS = 0.1447;
 const MIN_RADIUS = 0.0672;

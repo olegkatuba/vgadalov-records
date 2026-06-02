@@ -5,10 +5,10 @@ import { VinylRecord } from "./VinylRecord";
 import { useContext, useEffect, useRef, useState } from "react";
 import { Turntable } from "./Turntable";
 import { Group, Object3D, Sphere, Vector3, type Mesh, type PerspectiveCamera as PerspectiveCameraType } from "three";
-import { ControlsContext, FocusContext, FocusProvider } from "./App";
 import PLayer, { type RecordInfo } from "./Player";
 import { Cover } from "./Cover";
 import { records } from "./records";
+import { FocusContext, FocusProvider } from "./FocusContext";
 
 export function Table() {
   const [coverOpened, setCoverOpened] = useState(false);

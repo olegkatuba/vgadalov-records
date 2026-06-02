@@ -7,9 +7,10 @@ import { Howl, Howler } from 'howler';
 import { Mesh, Vector3 } from 'three';
 import { type GLTF } from 'three-stdlib';
 import { VinylRecord } from './VinylRecord';
-import { ControlsContext, TrackInfoPanelContext } from './App';
 import type { Track } from './Player';
 import { easing } from 'maath';
+import { ControlsContext } from './ControlsContext';
+import { TrackInfoPanelContext } from './TrackInfoPanelContext';
 
 const dragPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
 
@@ -135,7 +136,9 @@ export function Turntable({ children, trackList = [], slipmatRef, /* onRecordDra
     const [isPowerOn, setIsPowerOn] = useState(false);
     const [isRecordBlocked, setIsRecordBlocked] = useState(false);
 
-    const { setEnabled } = useContext(ControlsContext);
+    const ctx = useContext(ControlsContext);
+    console.log(ControlsContext, ctx);
+    const { setEnabled } = ctx;
     // const isOnDrag = !enabled;
     // const setIsOnDrag = (enabled) => setEnabled(!enabled);
 

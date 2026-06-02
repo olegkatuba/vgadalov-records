@@ -26,7 +26,10 @@ const loadTracks = (paths: string[]) => {
         onload: () => {
           res(track);
         },
-        onloaderror: rej
+        onloaderror: (e) => {
+          console.error(name, e);
+          rej(e);
+        }
       });
     })
   );

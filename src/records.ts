@@ -79,32 +79,32 @@ const recordOne: RecordInfo = {
             {
                 "name": "Baby One More Time",
                 "author": "Britney Spears",
-                "path": "https://dl2.mp3party.net/online/9850221.mp3"
+                "path": "https://www.ostmusic.org/sound/track/shrek/09.%20Smash%20Mouth%20-%20All%20Star.mp3"
             },
             {
                 "name": "I Want It That Way",
                 "author": "Backstreet Boys ",
-                "path": "https://dl2.mp3party.net/online/39886.mp3"
+                "path": "https://www.ostmusic.org/sound/track/shrek/09.%20Smash%20Mouth%20-%20All%20Star.mp3"
             },
             {
                 "name": "Livin’ la Vida Loca",
                 "author": "Ricky Martin",
-                "path": "https://dl2.mp3party.net/online/8557897.mp3"
+                "path": "https://www.ostmusic.org/sound/track/shrek/09.%20Smash%20Mouth%20-%20All%20Star.mp3"
             },
             {
                 "name": "Mambo No.5",
                 "author": "Lou Bega",
-                "path": "https://dl2.mp3party.net/online/170607.mp3"
+                "path": "https://www.ostmusic.org/sound/track/shrek/09.%20Smash%20Mouth%20-%20All%20Star.mp3"
             },
             {
                 "name": "Blue (Da Ba Dee)",
                 "author": "Eiffel 65",
-                "path": "https://dl2.mp3party.net/online/8969620.mp3"
+                "path": "https://www.ostmusic.org/sound/track/shrek/09.%20Smash%20Mouth%20-%20All%20Star.mp3"
             },
             {
                 "name": "Believe",
                 "author": "Cher",
-                "path": "https://dl2.mp3party.net/online/5198345.mp3"
+                "path": "https://www.ostmusic.org/sound/track/shrek/09.%20Smash%20Mouth%20-%20All%20Star.mp3"
             }
         ],
     },
@@ -115,23 +115,23 @@ const recordOne: RecordInfo = {
                 "name": "Детство",
                 "author": "Ласковый Май",
                 description: "Мама: то песня, когда ему исполнилось три года, его первый раз тётка привела на юбилей к себе в ресторан. У нас был такой семейный ужин, произвела на него огромное впечатление Юрия Шатунова, эта песня, и он потом её очень долго пел, танцевал на всех семейных мероприятиях. Можно сказать, что такая знаковая песня, и длительное время он её пел, вспоминал. Наверное, из таких вот сознательных мелодий я вспоминаю этот вариант.",
-                "path": "https://dl2.mp3party.net/online/7885152.mp3"
+                "path": "https://www.ostmusic.org/sound/track/shrek/09.%20Smash%20Mouth%20-%20All%20Star.mp3"
             },
             {
                 "name": "Море, море",
                 "author": "Юрий Антонов",
                 description: "Мама:Когда ему было пять лет, мы первый раз поехали отдыхать на море в Алушту. Первый раз он увидел как само море, горы, солнце. Такое было тоже, наверное, самое насыщенное яркие впечатления. Такие первые, связанные с морем, и он эту песню пел «Море-море, мир бездонный». Но он её пел не «мир бездонный», а её пел «море-море, мир бездомных», не совсем врубая смысл, но тоже такое яркое событие, и я уверена, все эти два варианта песни он помнит очень хорошо, и события эти в жизни тоже. К сожалению, видео нет, скину фоток с моря именно в этом возрасте, но как-то так.",
-                "path": "https://dl2.mp3party.net/online/8426620.mp3"
+                "path": "https://www.ostmusic.org/sound/track/shrek/09.%20Smash%20Mouth%20-%20All%20Star.mp3"
             },
             {
                 "name": "Звездное лето",
                 "author": "Алла Пугачева",
-                "path": "https://dl2.mp3party.net/online/8427324.mp3"
+                "path": "https://www.ostmusic.org/sound/track/shrek/09.%20Smash%20Mouth%20-%20All%20Star.mp3"
             },
             {
                 "name": "Арлекино",
                 "author": "Алла Пугачева",
-                "path": "https://dl2.mp3party.net/online/4435780.mp3"
+                "path": "https://www.ostmusic.org/sound/track/shrek/09.%20Smash%20Mouth%20-%20All%20Star.mp3"
             },
             {
                 "name": "Aram-Zam-Zam",
@@ -314,7 +314,7 @@ const recordThree: RecordInfo = {
 };
 
 export const records = [
-    // recordOne,
+    recordOne,
     // recordTwo,
-    recordThree,
+    // recordThree,
 ];

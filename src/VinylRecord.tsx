@@ -197,13 +197,13 @@ export const VinylRecord = (
         }
     });
 
-    const handleClick = (e) => {
+    const handleClick = (e: ThreeEvent<MouseEvent>) => {
         e.stopPropagation();
         if (wasDragged.current) {
             return;
         };
         actions['Jump'].setLoop(THREE.LoopOnce, 1).reset().play();
-        onClick(e);
+        onClick?.(e);
     };
 
     const isFirstRender = useRef(true);

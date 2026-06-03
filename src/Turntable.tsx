@@ -135,7 +135,7 @@ export function Turntable({ children, trackList: trackListProp = [], slipmatRef,
 
     const trackInfoPanel = useContext(TrackInfoPanelContext)
 
-    const [isPowerOn, setIsPowerOn] = useState(true);
+    const [isPowerOn, setIsPowerOn] = useState(false);
     const [isRecordBlocked, setIsRecordBlocked] = useState(false);
 
     const ctx = useContext(ControlsContext);
@@ -149,14 +149,6 @@ export function Turntable({ children, trackList: trackListProp = [], slipmatRef,
         e.stopPropagation();
         setIsPowerOn((state => !state));
     }
-
-    useEffect(() => {
-        if (isPowerOn) {
-            currentTrack.current?.play();
-        } else {
-            currentTrack.current?.stop();
-        }
-    }, [isPowerOn])
 
     const roundingPartRef = useRef<THREE.Object3D>(null);
 
@@ -210,6 +202,16 @@ export function Turntable({ children, trackList: trackListProp = [], slipmatRef,
             loop: true,
         });
     }, []);
+
+    useEffect(() => {
+        if (isPowerOn) {
+            currentTrack.current?.play();
+            vinylSound?.play();
+        } else {
+            currentTrack.current?.stop();
+            vinylSound?.stop();
+        }
+    }, [isPowerOn, vinylSound]);
 
     /* useFrame(() => {
         if (isPowerOn && !isOnDrag && currentTrack.current && currentTrack.current.playing()) {
@@ -298,12 +300,15 @@ export function Turntable({ children, trackList: trackListProp = [], slipmatRef,
 
         const tonarmAngle = tonarmRef.current.rotation.y;
 
-        if (-tonarmAngle < MIN_MUSIC_ANGLE || !isPowerOn) {
+        if (-tonarmAngle < MIN_MUSIC_ANGLE) {
             setIsRecordBlocked(false);
-            return;
+        } else {
+            setIsRecordBlocked(true);
         }
 
-        setIsRecordBlocked(true);
+        if (-tonarmAngle < MIN_MUSIC_ANGLE) {
+            return;
+        }
 
         const trackSeek = (-tonarmAngle - MIN_MUSIC_ANGLE) / (MAX_MUSIC_ANGLE - MIN_MUSIC_ANGLE);
 
@@ -326,7 +331,7 @@ export function Turntable({ children, trackList: trackListProp = [], slipmatRef,
             }
         }
 
-        if (!trackList.at(i)) {
+        if (!trackList.at(i) || !isPowerOn) {
             return;
         }
 

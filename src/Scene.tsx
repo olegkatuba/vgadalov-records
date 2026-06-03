@@ -6,6 +6,7 @@ import { Cover } from "./Cover";
 import { RECORDS } from "./records";
 import { LoadingContext } from "./LoadingContext";
 import { Table } from "./Table";
+import { Shelf } from "./Shelf";
 
 const fallbackTrack = new Howl({
   src: ['./vinyl.mp3'],
@@ -80,10 +81,12 @@ function Scene() {
         <Cover position={[0, 0.15, -0.6]} onOpened={handleOnOpened} />
         <PLayer position={[0, 0, 1]} records={coverOpened ? records : []} />
         <Table />
+        <Shelf position={[0, -0.01, -0.41]} />
       </group>
       {/* <Stage intensity={0.1} shadows="contact" environment="warehouse" /> */}
       <Environment
-        preset="studio"
+        // preset="studio"
+        files="./studio_small_03_1k.hdr"
         background={false}
         // backgroundBlurriness={0} // optional blur factor between 0 and 1 (default: 0, only works with three 0.146 and up)
         backgroundIntensity={1} // optional intensity factor (default: 1, only works with three 0.163 and up)

@@ -4,9 +4,8 @@ import { Group, Object3D, Sphere, Vector3, type Mesh, type PerspectiveCamera as 
 import PLayer, { type RecordInfo, type Record } from "./Player";
 import { Cover } from "./Cover";
 import { RECORDS } from "./records";
-import { FocusContext, FocusProvider } from "./FocusContext";
-import { useFrame, type ThreeEvent } from "@react-three/fiber";
 import { LoadingContext } from "./LoadingContext";
+import { Table } from "./Table";
 
 const fallbackTrack = new Howl({
   src: ['./vinyl.mp3'],
@@ -80,6 +79,7 @@ function Scene() {
       <group>
         <Cover position={[0, 0.15, -0.6]} onOpened={handleOnOpened} />
         <PLayer position={[0, 0, 1]} records={coverOpened ? records : []} />
+        <Table />
       </group>
       {/* <Stage intensity={0.1} shadows="contact" environment="warehouse" /> */}
       <Environment

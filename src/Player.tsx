@@ -74,7 +74,7 @@ export interface Record {
 }
 
 export type PLayerProps = {
-  records?: RecordInfo[];
+  records?: Record[];
 }
 
 export default function PLayer({ records: recordsProp }: PLayerProps) {
@@ -140,15 +140,25 @@ export default function PLayer({ records: recordsProp }: PLayerProps) {
       newRecordPositions[i] = VinylRecordPosition.Turntable;
       setRecordPositions(newRecordPositions)
       // slipmatRef.current.attach(e.eventObject);
-      setCurrentTrackList(records[i][recordRotations[i] === VinylRecordRotation.SideOne ? 'sideOne' : 'sideTwo'].tracks);
+      // setCurrentTrackList(records[i][recordRotations[i] === VinylRecordRotation.SideOne ? 'sideOne' : 'sideTwo'].tracks);
     } else {
       const newRecordPositions = [...recordPositions];
       newRecordPositions[i] = VinylRecordPosition.Home;
       setRecordPositions(newRecordPositions);
-      setCurrentTrackList([]);
+      // setCurrentTrackList([]);
       // shelfRef.current.attach(e.eventObject);
     }
   };
+
+  useEffect(() => {
+    const currentRecordIndex = recordPositions.indexOf(VinylRecordPosition.Turntable);
+
+    if (currentRecordIndex !== -1) {
+      setCurrentTrackList(records[currentRecordIndex]?.[recordRotations[currentRecordIndex] === VinylRecordRotation.SideOne ? 'sideOne' : 'sideTwo']?.tracks || []);
+    } else {
+      setCurrentTrackList([]);
+    }
+  }, [recordPositions, recordRotations, records]);
 
   return (
     <>

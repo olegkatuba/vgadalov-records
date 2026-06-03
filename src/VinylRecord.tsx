@@ -235,6 +235,7 @@ export const VinylRecord = (
             onPointerMove={handlePointerMove}
             onPointerUp={handlePointerUp}
             position={[-0.32 + (0.32), 0.004, -0.7]}
+            rotation={[0, Math.PI, 0]}
         >
             <group ref={group}>
                 <group name="Scene">

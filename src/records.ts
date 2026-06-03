@@ -163,7 +163,7 @@ const recordTwo: RecordInfo = {
 
 const recordThree: RecordInfo = {
     "sideOne": {
-        image: './SIDE A.png',
+        image: './SIDE E.png',
         "tracks": [
             {
                 "name": "Лошадка",
@@ -203,7 +203,7 @@ const recordThree: RecordInfo = {
         ],
     },
     "sideTwo": {
-        image: './SIDE B.png',
+        image: './SIDE F.png',
         "tracks": [
             {
                 "name": "Englishman In New York",
@@ -247,7 +247,7 @@ const recordThree: RecordInfo = {
     }
 };
 
-export const records = [
+export const RECORDS = [
     recordOne,
     recordTwo,
     recordThree,

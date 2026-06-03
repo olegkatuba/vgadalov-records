@@ -1,11 +1,8 @@
 import * as THREE from 'three'
-import { Sphere } from "three";
-import { DragControls, Html, useBounds, useGLTF, Text, useTexture, useAnimations } from '@react-three/drei'
-import { Selection, Select, EffectComposer, Bloom } from '@react-three/postprocessing';
+import { useGLTF, Text, useTexture, useAnimations } from '@react-three/drei'
 import type { GLTF } from 'three-stdlib'
-import { forwardRef, useContext, useEffect, useMemo, useRef, useState } from 'react';
-import type { MutableRefObject, Ref, RefObject } from 'react';
-import './VinylRecord.css'
+import { useContext, useEffect, useMemo, useRef, useState } from 'react';
+import type { RefObject } from 'react';
 import { useFrame, useThree, type ThreeElements, type ThreeEvent } from '@react-three/fiber';
 import { easing } from 'maath';
 import { VinylRecordRotation, type Record, type RecordSide } from './Player';
@@ -89,7 +86,7 @@ export const VinylRecord = (
             sideOne,
             sideTwo
         }
-    }, [materials.labelSideOne, materials.labelSideTwo, textures.sideOne, textures.sideTwo]);
+    }, [materials.labelSideOne, materials.labelSideTwo]);
 
     const { setEnabled } = useContext(ControlsContext);
 
@@ -108,7 +105,9 @@ export const VinylRecord = (
     const { raycaster, camera, pointer, scene } = useThree();
 
     useEffect(() => {
-        parent.current.attach(recordPositionRef.current);
+        if (parent.current && recordPositionRef.current) {
+            parent.current.attach(recordPositionRef.current);
+        }
     }, [parent])
 
     // Состояния: 'home' (на базе), 'dragging' (в руке), 'player' (на проигрывателе)
@@ -234,7 +233,9 @@ export const VinylRecord = (
             ref={recordPositionRef}
             onPointerDown={handlePointerDown}
             onPointerMove={handlePointerMove}
-            onPointerUp={handlePointerUp}>
+            onPointerUp={handlePointerUp}
+            position={[-0.32 + (0.32), 0.004, -0.7]}
+        >
             <group ref={group}>
                 <group name="Scene">
                     <group name="record" scale={[-1, 1, 1]}>

@@ -3,10 +3,11 @@ import { useFrame, useThree, type ThreeEvent } from "@react-three/fiber";
 import * as THREE from 'three'
 import { Selection, Select, EffectComposer, Bloom } from '@react-three/postprocessing';
 import { VinylRecord } from "./VinylRecord";
-import { useContext, useEffect, useMemo, useRef, useState, type Ref } from "react";
+import { Suspense, useContext, useEffect, useMemo, useRef, useState, type Ref } from "react";
 import { Turntable } from "./Turntable";
 import { Group, Object3D, Sphere, Vector3, type Mesh, type PerspectiveCamera as PerspectiveCameraType } from "three";
 import { FocusContext } from "./FocusContext";
+import { LoadingContext } from "./LoadingContext";
 
 export enum VinylRecordPosition {
   Home,
@@ -40,7 +41,7 @@ const loadTracks = (paths: string[]) => {
   return Promise.all(promises);
 };
 
-const turntableArea = new Sphere(new Vector3(0, 0, 0), 0.1);
+const turntableArea = new Sphere(new Vector3(0, 0, 0), 0.12);
 
 export type TrackInfo = {
   path: string;
@@ -73,13 +74,14 @@ export interface Record {
 }
 
 export type PLayerProps = {
-  recordsInfo: RecordInfo[];
+  records?: RecordInfo[];
 }
 
-export default function PLayer({ recordsInfo }: PLayerProps) {
-  const [records, setRecords] = useState<Record[]>([]);
+export default function PLayer({ records: recordsProp }: PLayerProps) {
+  const records = useMemo(() => recordsProp || [], [recordsProp]);
+  // const [records, setRecords] = useState<Record[]>([]);
   const [currentTrackList, setCurrentTrackList] = useState<Track[]>([]);
-  const [focusedObjectUuid, setFocusedObjectUuid] = useState<string>(null);
+  // const [focusedObjectUuid, setFocusedObjectUuid] = useState<string>(null);
 
   const [recordPositions, setRecordPositions] = useState<VinylRecordPosition[]>([]);
   const [recordRotations, setRecordRotations] = useState<VinylRecordRotation[]>([]);
@@ -89,9 +91,12 @@ export default function PLayer({ recordsInfo }: PLayerProps) {
   const shelfRef = useRef<Object3D>(null);
   const recordsRef = useRef<Object3D[]>([]);
 
-  const { setFocus } = useContext(FocusContext);
-
   useEffect(() => {
+    setRecordPositions(records.map(() => VinylRecordPosition.Home));
+    setRecordRotations(records.map(() => VinylRecordRotation.SideOne));
+  }, [records]);
+
+  /* useEffect(() => {
     const loadRecordsTracks = async () => {
       const records = await Promise.all(recordsInfo.map<Promise<Record>>(async ({ sideOne, sideTwo }) => {
         const [sideOneTracks, sideTwoTracks] = await Promise.all([loadTracks(sideOne.tracks.map(({ path }) => path)), loadTracks(sideTwo.tracks.map(({ path }) => path))]);
@@ -105,10 +110,11 @@ export default function PLayer({ recordsInfo }: PLayerProps) {
       setRecords(records);
       setRecordPositions(records.map(() => VinylRecordPosition.Home));
       setRecordRotations(records.map(() => VinylRecordRotation.SideOne));
+      setPercent(100);
     };
 
     loadRecordsTracks();
-  }, [recordsInfo]);
+  }, [recordsInfo, setPercent]); */
 
   const { raycaster, camera, pointer, scene } = useThree();
 
@@ -151,39 +157,34 @@ export default function PLayer({ recordsInfo }: PLayerProps) {
           const uuid = `record-${i}`;
 
           return (
-            <VinylRecord
-              key={uuid}
-              uuid={uuid}
-              record={record}
-              onPointerUp={(e) => handlePointerUp(e, i)}
-              onPointerDown={(e) => handlePointerDown(e, i)}
-              ref={ref => {
-                recordsRef.current[i] = ref;
-              }}
-              parent={recordPositions[i] === VinylRecordPosition.Home ? shelfRef : slipmatRef}
-              position={recordPositions[i] === VinylRecordPosition.Home ? [-0.32 + (0.32 * i), 0.004, -0.35] : [0, 0, 0]}
-              rotation={recordRotations[i]}
-              /* onClick={(e) => {
-                e.stopPropagation();
-                console.log(e);
-                setFocusedObjectUuid(e.eventObject.uuid);
-                bounds.refresh(e.eventObject).clip().fit();
-              }} */
-              onClick={(() => {
-                const newRecordRotations = [...recordRotations];
-                newRecordRotations[i] = newRecordRotations[i] === VinylRecordRotation.SideOne ? VinylRecordRotation.SideTwo : VinylRecordRotation.SideOne;
-                setRecordRotations(newRecordRotations);
-                if (recordPositions[i] === VinylRecordPosition.Turntable) {
-                  setCurrentTrackList(records[i][newRecordRotations[i] === VinylRecordRotation.SideOne ? 'sideOne' : 'sideTwo'].tracks);
-                }
-              })}
-              onRotate={focusedObjectUuid === uuid ? (() => {
-                const newRecordRotations = [...recordRotations];
-                newRecordRotations[i] = newRecordRotations[i] === VinylRecordRotation.SideOne ? VinylRecordRotation.SideTwo : VinylRecordRotation.SideOne;
-                setRecordRotations(newRecordRotations);
-                setCurrentTrackList(records[i][newRecordRotations[i] === VinylRecordRotation.SideOne ? 'sideOne' : 'sideTwo'].tracks);
-              }) : null}
-            />
+            <Suspense key={uuid} fallback={<group />}>
+              <VinylRecord
+                uuid={uuid}
+                record={record}
+                onPointerUp={(e) => handlePointerUp(e, i)}
+                onPointerDown={(e) => handlePointerDown(e, i)}
+                ref={ref => {
+                  recordsRef.current[i] = ref;
+                }}
+                parent={recordPositions[i] === VinylRecordPosition.Home ? shelfRef : slipmatRef}
+                position={recordPositions[i] === VinylRecordPosition.Home ? [-0.32 + (0.32 * i), 0.004, -0.35] : [0, 0, 0]}
+                rotation={recordRotations[i]}
+                /* onClick={(e) => {
+                  e.stopPropagation();
+                  console.log(e);
+                  setFocusedObjectUuid(e.eventObject.uuid);
+                  bounds.refresh(e.eventObject).clip().fit();
+                }} */
+                onClick={(() => {
+                  const newRecordRotations = [...recordRotations];
+                  newRecordRotations[i] = newRecordRotations[i] === VinylRecordRotation.SideOne ? VinylRecordRotation.SideTwo : VinylRecordRotation.SideOne;
+                  setRecordRotations(newRecordRotations);
+                  if (recordPositions[i] === VinylRecordPosition.Turntable) {
+                    setCurrentTrackList(records[i][newRecordRotations[i] === VinylRecordRotation.SideOne ? 'sideOne' : 'sideTwo'].tracks);
+                  }
+                })}
+              />
+            </Suspense>
           )
         })}
       </group>
@@ -192,13 +193,7 @@ export default function PLayer({ recordsInfo }: PLayerProps) {
         ref={turntableRef}
         slipmatRef={slipmatRef}
         trackList={currentTrackList}
-        onClick={(e) => {
-          console.log(e);
-          e.stopPropagation();
-          // setFocus(e.eventObject);
-          /* setFocusedObjectUuid(e.eventObject.uuid);
-          bounds.refresh(e.eventObject).clip().fit(); */
-        }} />
+      />
     </>
   );
 }

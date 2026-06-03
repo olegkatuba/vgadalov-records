@@ -97,6 +97,7 @@
     font-weight: 400;
     margin: 0;
     line-height: 1.2;
+    color: #ffffff;
 }
 
 .track-artist {
@@ -106,6 +107,7 @@
     align-self: flex-end;
     /* Выравнивание по правому краю как на макете */
     opacity: 0.9;
+    color: #ffffff;
 }
 
 /* Кнопки управления */
@@ -126,4 +128,5 @@
     margin: 0;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
     padding-top: 16px;
+    color: #ffffff;
 }

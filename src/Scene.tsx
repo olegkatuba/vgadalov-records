@@ -1,78 +1,110 @@
 import { Bounds, CameraControls, DragControls, Edges, Environment, Float, GizmoHelper, GizmoViewport, Grid, OrbitControls, Outlines, PerspectiveCamera, PivotControls, Sky, Stage, Stats, Svg, TransformControls } from "@react-three/drei";
-import { useContext, useEffect, useRef, useState } from "react";
+import { memo, useCallback, useContext, useEffect, useRef, useState } from "react";
 import { Group, Object3D, Sphere, Vector3, type Mesh, type PerspectiveCamera as PerspectiveCameraType } from "three";
-import PLayer, { type RecordInfo } from "./Player";
+import PLayer, { type RecordInfo, type Record } from "./Player";
 import { Cover } from "./Cover";
-import { records } from "./records";
+import { RECORDS } from "./records";
 import { FocusContext, FocusProvider } from "./FocusContext";
-import type { ThreeEvent } from "@react-three/fiber";
+import { useFrame, type ThreeEvent } from "@react-three/fiber";
+import { LoadingContext } from "./LoadingContext";
 
-export function Table() {
-  const [coverOpened, setCoverOpened] = useState(true);
+const fallbackTrack = new Howl({
+  src: ['./vinyl.mp3'],
+  html5: true,
+  preload: true,
+});
 
-  const coverRef = useRef<Object3D>(null);
+const loadTracks = (paths: string[]) => {
+  const promises = paths.map((name) =>
+    new Promise<Howl>((res, rej) => {
+      const track = new Howl({
+        src: [name],
+        html5: true,
+        preload: true,
+        onload: () => {
+          res(track);
+        },
+        onloaderror: (id, error) => {
+          console.error(name, error);
+          // rej(error);
+          res(fallbackTrack);
+        }
+      });
+    })
+  );
 
-  const { setFocus } = useContext(FocusContext);
+  return Promise.all(promises);
+};
 
-  const handleCoverClick = (e: ThreeEvent<MouseEvent>) => {
-    if (coverOpened) {
-      setFocus(e.eventObject);
-    }
-  }
-
-  return (
-    <>
-      <Cover ref={coverRef} position={[0, 0.15, -0.6]} onOpened={() => { setCoverOpened(true) }} onClick={handleCoverClick} opened={coverOpened} />
-      {coverOpened && <PLayer position={[0, 0, 1]} recordsInfo={records} />}
-    </>
-  )
-}
-
-export default function Scene() {
-
+function Scene() {
   const cameraRef = useRef<PerspectiveCameraType>(null);
 
-  /* useFrame(() => {
-    console.log(cameraRef.current);
-  }); */
+  const [coverOpened, setCoverOpened] = useState(false);
+  const [records, setRecords] = useState<Record[]>([]);
 
-  /* useEffect(() => {
-    cameraRef.current.lookAt(0, 0, 1);
-  }, []); */
+  const { setPercent } = useContext(LoadingContext);
+
+  useEffect(() => {
+    const loadRecordsTracks = async () => {
+      const records = await Promise.all(RECORDS.map<Promise<Record>>(async ({ sideOne, sideTwo }) => {
+        const [sideOneTracks, sideTwoTracks] = await Promise.all([loadTracks(sideOne.tracks.map(({ path }) => path)), loadTracks(sideTwo.tracks.map(({ path }) => path))]);
+
+        return {
+          sideOne: { ...sideOne, tracks: sideOne.tracks.map((track, i) => ({ ...track, sound: sideOneTracks[i] })) },
+          sideTwo: { ...sideTwo, tracks: sideTwo.tracks.map((track, i) => ({ ...track, sound: sideTwoTracks[i] })) },
+        }
+      }));
+      console.log(records);
+      setRecords(records);
+      setPercent(100);
+    };
+
+    loadRecordsTracks();
+
+    return () => {
+      console.log('unmount');
+    }
+  }, [setPercent]);
+
+  const handleOnOpened = useCallback(() => {
+    setCoverOpened(true);
+  }, []);
 
   return (
     <>
 
       {/* <Bounds fit clip observe margin={1.5}> */}
-      <FocusProvider>
-        <Table />
-      </FocusProvider>
+      {/* <Table position={[0, 0, 0]} /> */}
       {/* </Bounds> */}
 
+      <group>
+        <Cover position={[0, 0.15, -0.6]} onOpened={handleOnOpened} />
+        <PLayer position={[0, 0, 1]} records={coverOpened ? records : []} />
+      </group>
       {/* <Stage intensity={0.1} shadows="contact" environment="warehouse" > */}
       <Environment preset="sunset" />
       <PerspectiveCamera
         fov={50}
         makeDefault
-        position={[-0.031145156755629913, 0.10140129394866952, 0.15929664219819167]}
+        position={[0, 0.4, 0.8]}
         ref={cameraRef}
         near={0.001}
         far={10}
-      >
-        {/* <directionalLight intensity={2} /> */}
-      </PerspectiveCamera>
+      />
       <ambientLight intensity={2} />
 
-      <Stats />
+      {/* <Stats /> */}
       {/* <CameraControls camera={camera} /> */}
       {/* <OrbitControls /> */}
-      <GizmoHelper
+      {/* <GizmoHelper
         alignment="bottom-right" // widget alignment within scene
         margin={[80, 80]} // widget margins (X, Y)
       >
         <GizmoViewport axisColors={['red', 'green', 'blue']} labelColor="white" />
-      </GizmoHelper>
+      </GizmoHelper> */}
 
     </>
   );
 }
+
+export default memo(Scene);

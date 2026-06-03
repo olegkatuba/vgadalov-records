@@ -128,12 +128,14 @@ export type TurntableProps = Omit<
     slipmatRef: RefObject<THREE.Object3D>;
 };
 
-export function Turntable({ children, trackList = [], slipmatRef, /* onRecordDragEnd, */ onClick, ...props }: TurntableProps) {
+export function Turntable({ children, trackList: trackListProp = [], slipmatRef, /* onRecordDragEnd, */ onClick, ...props }: TurntableProps) {
     const { nodes, materials } = useGLTF('/turntable.glb') as unknown as GLTFResult;
+
+    const trackList = useMemo(() => trackListProp || [], [trackListProp]);
 
     const trackInfoPanel = useContext(TrackInfoPanelContext)
 
-    const [isPowerOn, setIsPowerOn] = useState(false);
+    const [isPowerOn, setIsPowerOn] = useState(true);
     const [isRecordBlocked, setIsRecordBlocked] = useState(false);
 
     const ctx = useContext(ControlsContext);
@@ -1001,10 +1003,10 @@ export function Turntable({ children, trackList = [], slipmatRef, /* onRecordDra
                             >
                                 {isRecordBlocked &&
                                     <mesh
-                                    /* onClick={(e) => e.stopPropagation()}
-                                    onPointerDown={e => e.stopPropagation()}
-                                    onPointerMove={e => e.stopPropagation()}
-                                    onPointerUp={e => e.stopPropagation()} */
+                                        onClick={(e) => e.stopPropagation()}
+                                        onPointerDown={e => e.stopPropagation()}
+                                        onPointerMove={e => e.stopPropagation()}
+                                        onPointerUp={e => e.stopPropagation()}
                                     >
                                         <cylinderGeometry args={[0.155, 0.155, 0.005, 32, 1]} />
                                         <meshStandardMaterial transparent opacity={0} />

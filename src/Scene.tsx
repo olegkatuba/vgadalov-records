@@ -19,7 +19,7 @@ const loadTracks = (paths: string[]) => {
     new Promise<Howl>((res, rej) => {
       const track = new Howl({
         src: [name],
-        html5: true,
+        // html5: true,
         preload: true,
         onload: () => {
           res(track);

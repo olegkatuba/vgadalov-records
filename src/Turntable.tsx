@@ -137,7 +137,6 @@ export function Turntable({ children, trackList = [], slipmatRef, /* onRecordDra
     const [isRecordBlocked, setIsRecordBlocked] = useState(false);
 
     const ctx = useContext(ControlsContext);
-    console.log(ControlsContext, ctx);
     const { setEnabled } = ctx;
     // const isOnDrag = !enabled;
     // const setIsOnDrag = (enabled) => setEnabled(!enabled);

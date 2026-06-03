@@ -1,17 +1,14 @@
 import { Bounds, CameraControls, DragControls, Edges, Environment, Float, GizmoHelper, GizmoViewport, Grid, OrbitControls, Outlines, PerspectiveCamera, PivotControls, Sky, Stage, Stats, Svg, TransformControls } from "@react-three/drei";
-import { useFrame, type ThreeEvent } from "@react-three/fiber";
-import { Selection, Select, EffectComposer, Bloom } from '@react-three/postprocessing';
-import { VinylRecord } from "./VinylRecord";
 import { useContext, useEffect, useRef, useState } from "react";
-import { Turntable } from "./Turntable";
 import { Group, Object3D, Sphere, Vector3, type Mesh, type PerspectiveCamera as PerspectiveCameraType } from "three";
 import PLayer, { type RecordInfo } from "./Player";
 import { Cover } from "./Cover";
 import { records } from "./records";
 import { FocusContext, FocusProvider } from "./FocusContext";
+import type { ThreeEvent } from "@react-three/fiber";
 
 export function Table() {
-  const [coverOpened, setCoverOpened] = useState(false);
+  const [coverOpened, setCoverOpened] = useState(true);
 
   const coverRef = useRef<Object3D>(null);
 

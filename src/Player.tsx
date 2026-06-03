@@ -26,9 +26,9 @@ const loadTracks = (paths: string[]) => {
         onload: () => {
           res(track);
         },
-        onloaderror: (e) => {
-          console.error(name, e);
-          rej(e);
+        onloaderror: (id, error) => {
+          console.error(name, error);
+          rej(error);
         }
       });
     })
@@ -41,6 +41,7 @@ const turntableArea = new Sphere(new Vector3(0, 0, 0), 0.1);
 
 export type TrackInfo = {
   path: string;
+  fallback?: string;
   name?: string;
   author?: string;
   description?: string;

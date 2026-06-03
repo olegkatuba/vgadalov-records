@@ -8,7 +8,12 @@ function ControlsProvider({ children }) {
 
     return (
         <ControlsContext.Provider value={{ enabled, setEnabled }}>
-            <OrbitControls makeDefault enabled={enabled} />
+            <OrbitControls
+                makeDefault
+                enabled={enabled}
+                minDistance={0.3}
+                maxDistance={1}
+            />
             {children}
         </ControlsContext.Provider>
     );

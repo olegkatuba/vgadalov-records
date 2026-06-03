@@ -187,7 +187,7 @@ export const VinylRecord = (
             raycaster.ray.intersectPlane(dragPlane, dragPoint);
 
             // Плавно двигаем пластинку за курсором (и немного приподнимаем ее по Y)
-            easing.damp3(recordPositionRef.current.position, [dragPoint.x, 0.05, dragPoint.z], 0.1, delta);
+            easing.damp3(recordPositionRef.current.position, [dragPoint.x, 0.03, dragPoint.z], 0.1, delta);
             // Выравниваем вращение (чтобы она не крутилась в воздухе)
             // easing.dampE(recordRef.current.rotation, [0, 0, 0], 0.1, delta);
 

@@ -53,11 +53,12 @@ function LoadingProvider({ children }) {
                 {/* Экран загрузки */}
                 <div className={`loader-overlay ${isEverythingLoaded ? 'fade-out' : ''}`}>
                     <div className="vinyl-spinner" style={{ animation: "spin 1s linear infinite" }}>
-                        <div className="vinyl-spinner" style={{ position: 'absolute', width: '60px', height: '60px', margin: '6px' }} />
-                        <div className="vinyl-spinner" style={{ position: 'absolute', width: '40px', height: '40px', margin: '16px' }} />
-                        <div className="vinyl-spinner" style={{ position: 'absolute', width: '20px', height: '20px', margin: '26px' }} />
+                        <div className="vinyl-spinner center" style={{ width: '80px', height: '80px' }} />
+                        <div className="vinyl-spinner center" style={{ width: '60px', height: '60px' }} />
+                        <div className="vinyl-spinner center" style={{ width: '40px', height: '40px' }} />
+                        <div className="vinyl-spinner center" style={{ width: '20px', height: '20px' }} />
                     </div>
-                    <div className="loader-text">LOADING EXPERIENCE</div>
+                    <div className="loader-text">LOADING...</div>
                     {/* <div className="loader-progress">
                         {!audioLoaded
                             ? `Загрузка аудио: ${percent}`

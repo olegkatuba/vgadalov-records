@@ -326,9 +326,11 @@ export function Turntable({ children, trackList: trackListProp = [], slipmatRef,
             }
         }
 
+        if (!trackList.at(i)) {
+            return;
+        }
+
         trackInfoPanel.setTrack(trackList.at(i));
-
-
 
         // sound.seek(trackSeek * sound.duration());
         currentTrack.current.play();
@@ -984,10 +986,11 @@ export function Turntable({ children, trackList: trackListProp = [], slipmatRef,
                         castShadow
                         receiveShadow
                         geometry={nodes.Rega_Planar_1_Black.geometry}
-                        material={materials.black_gloss_plastic_2}
+                        // material={materials.black_gloss_plastic_2}
                         position={[0, -0.006, 0]}
                         onClick={(e) => e.stopPropagation()}
                     >
+                        <meshStandardMaterial transparent opacity={0.9} color="#acd4f9" metalness={0.85} roughness={0.2} />
                         <mesh
                             name="slipmat"
                             castShadow

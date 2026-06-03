@@ -10,7 +10,7 @@ import { LoadingContext } from "./LoadingContext";
 
 const fallbackTrack = new Howl({
   src: ['./vinyl.mp3'],
-  html5: true,
+  // html5: true,
   preload: true,
 });
 
@@ -81,8 +81,16 @@ function Scene() {
         <Cover position={[0, 0.15, -0.6]} onOpened={handleOnOpened} />
         <PLayer position={[0, 0, 1]} records={coverOpened ? records : []} />
       </group>
-      {/* <Stage intensity={0.1} shadows="contact" environment="warehouse" > */}
-      <Environment preset="sunset" />
+      {/* <Stage intensity={0.1} shadows="contact" environment="warehouse" /> */}
+      <Environment
+        preset="studio"
+        background={false}
+        // backgroundBlurriness={0} // optional blur factor between 0 and 1 (default: 0, only works with three 0.146 and up)
+        backgroundIntensity={1} // optional intensity factor (default: 1, only works with three 0.163 and up)
+        backgroundRotation={[0, Math.PI / 4, 0]} // optional rotation (default: 0, only works with three 0.163 and up)
+        environmentIntensity={0.8} // optional intensity factor (default: 1, only works with three 0.163 and up)
+        environmentRotation={[0, Math.PI / 4, 0]} // optional rotation (default: 0, only works with three 0.163 and up)
+      />
       <PerspectiveCamera
         fov={50}
         makeDefault
@@ -91,7 +99,7 @@ function Scene() {
         near={0.001}
         far={10}
       />
-      <ambientLight intensity={2} />
+      {/* <ambientLight intensity={2} /> */}
 
       {/* <Stats /> */}
       {/* <CameraControls camera={camera} /> */}

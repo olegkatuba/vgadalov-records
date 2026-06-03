@@ -1,72 +1,5 @@
 import type { RecordInfo } from "./Player";
 
-const abbeyRoadRecord: RecordInfo = {
-    "sideOne": {
-        image: './SIDE A.png',
-        "tracks": [
-            {
-                "name": "Come Together",
-                "author": "The Beatles",
-                "description": "description",
-                "path": "./sideOne/01 Come Together.mp3"
-            },
-            {
-                "path": "./sideOne/02 Something.mp3"
-            },
-            {
-                "path": "./sideOne/03 Maxwell's Silver Hammer.mp3"
-            },
-            {
-                "path": "./sideOne/04 Oh! Darling.mp3"
-            },
-            {
-                "path": "./sideOne/05 Octopus's Garden.mp3"
-            },
-            {
-                "path": "./sideOne/06 I Want You (She's So Heavy).mp3"
-            }
-        ],
-    },
-    "sideTwo": {
-        image: './SIDE B.png',
-        "tracks": [
-            {
-                "path": "./sideTwo/07 Here Comes The Sun.mp3"
-            },
-            {
-                "path": "./sideTwo/08 Because.mp3"
-            },
-            {
-                "path": "./sideTwo/09 You Never Give Me Your Money.mp3"
-            },
-            {
-                "path": "./sideTwo/10 Sun King.mp3"
-            },
-            {
-                "path": "./sideTwo/11 Mean Mr Mustard.mp3"
-            },
-            {
-                "path": "./sideTwo/12 Polythene Pam.mp3"
-            },
-            {
-                "path": "./sideTwo/13 She Came In Through The Bathroom Window.mp3"
-            },
-            {
-                "path": "./sideTwo/14 Golden Slumbers.mp3"
-            },
-            {
-                "path": "./sideTwo/15 Carry That Weight.mp3"
-            },
-            {
-                "path": "./sideTwo/16 The End.mp3"
-            },
-            {
-                "path": "./sideTwo/17 Her Majesty.mp3"
-            }
-        ]
-    }
-};
-
 const recordOne: RecordInfo = {
     "sideOne": {
         image: './SIDE A.png',
@@ -75,7 +8,6 @@ const recordOne: RecordInfo = {
                 "name": "All Star",
                 "author": "Smash Mouth",
                 "path": "./tracks/Smash Mouth - All Star.mp3",
-                "fallback": "https://www.ostmusic.org/sound/track/shrek/09.%20Smash%20Mouth%20-%20All%20Star.mp3",
             },
             {
                 "name": "Baby One More Time",
@@ -84,7 +16,7 @@ const recordOne: RecordInfo = {
             },
             {
                 "name": "I Want It That Way",
-                "author": "Backstreet Boys ",
+                "author": "Backstreet Boys",
                 "path": "./tracks/Backstreet Boys - I Want It That Way.mp3"
             },
             {

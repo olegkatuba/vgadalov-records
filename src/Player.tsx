@@ -28,7 +28,10 @@ const loadTracks = (paths: string[]) => {
         },
         onloaderror: (id, error) => {
           console.error(name, error);
-          rej(error);
+          // rej(error);
+          res(new Howl({
+            src: ['./vinyl.mp3'],
+          }))
         }
       });
     })

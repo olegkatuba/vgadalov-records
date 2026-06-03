@@ -7,6 +7,7 @@ import { RECORDS } from "./records";
 import { LoadingContext } from "./LoadingContext";
 import { Table } from "./Table";
 import { Shelf } from "./Shelf";
+import { Carpet } from "./Carptet";
 
 const fallbackTrack = new Howl({
   src: ['./vinyl.mp3'],
@@ -82,8 +83,10 @@ function Scene() {
         <PLayer position={[0, 0, 1]} records={coverOpened ? records : []} />
         <Table />
         <Shelf position={[0, -0.01, -0.41]} />
+        <Carpet />
       </group>
       {/* <Stage intensity={0.1} shadows="contact" environment="warehouse" /> */}
+
       <Environment
         // preset="studio"
         files="./studio_small_03_1k.hdr"
@@ -94,6 +97,8 @@ function Scene() {
         environmentIntensity={0.8} // optional intensity factor (default: 1, only works with three 0.163 and up)
         environmentRotation={[0, Math.PI / 4, 0]} // optional rotation (default: 0, only works with three 0.163 and up)
       />
+
+
       <PerspectiveCamera
         fov={50}
         makeDefault

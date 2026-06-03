@@ -3,14 +3,17 @@ import { type JSX } from 'react'
 import { useGLTF } from '@react-three/drei'
 import { type GLTF } from 'three-stdlib'
 
+
 type GLTFResult = GLTF & {
     nodes: {
         Cube005: THREE.Mesh
         Cube005_1: THREE.Mesh
+        Cube005_2: THREE.Mesh
     }
     materials: {
         Wood: THREE.MeshStandardMaterial
         Metal: THREE.MeshStandardMaterial
+        Wall: THREE.MeshStandardMaterial
     }
 }
 
@@ -30,6 +33,12 @@ export function Shelf(props: JSX.IntrinsicElements['group']) {
                     receiveShadow
                     geometry={nodes.Cube005_1.geometry}
                     material={materials.Metal}
+                />
+                <mesh
+                    castShadow
+                    receiveShadow
+                    geometry={nodes.Cube005_2.geometry}
+                    material={materials.Wall}
                 />
             </group>
         </group>

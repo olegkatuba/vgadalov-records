@@ -55,7 +55,6 @@ function Scene() {
           sideTwo: { ...sideTwo, tracks: sideTwo.tracks.map((track, i) => ({ ...track, sound: sideTwoTracks[i] })) },
         }
       }));
-      console.log(records);
       setRecords(records);
       setPercent(100);
     };

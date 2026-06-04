@@ -120,24 +120,19 @@ export const VinylRecord = (
         wasDragged.current = false;
         isPressed.current = true;
 
-        // Захватываем указатель, чтобы не потерять фокус при быстром движении мыши
         // e.target.setPointerCapture(e.pointerId);
 
-        // ВАЖНО: Привязываем пластинку к корню сцены (Scene), 
-        // чтобы она двигалась в глобальных координатах и не зависела от вращения проигрывателя
         if (!recordPositionRef.current) return;
         // scene.attach(recordPositionRef.current);
         // onPointerDown?.(e);
     };
 
     const handlePointerMove = (e) => {
-        // Если мы в процессе перетаскивания, проверяем, как далеко ушел курсор
         if (isPressed.current && !wasDragged.current) {
             const dx = e.pointer.x - startPointerPos.current.x;
             const dy = e.pointer.y - startPointerPos.current.y;
             const distance = Math.hypot(dx, dy);
 
-            // Если сдвинули мышь дальше порога — значит, это ОДНОЗНАЧНО перетаскивание
             if (distance > CLICK_THRESHOLD) {
                 wasDragged.current = true;
                 isDragging.current = true;

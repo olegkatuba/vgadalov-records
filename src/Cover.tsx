@@ -10,10 +10,10 @@ import type { ThreeEvent } from '@react-three/fiber'
 import { FocusContext } from './FocusContext'
 import type { RecordInfo, TrackInfo } from './Player'
 
-type TrackListProps = THREE.Object3D<THREE.Object3DEventMap> & {
-    ref: RefObject<THREE.Object3D>;
-    title: string;
-    tracks: TrackInfo[];
+type TrackListProps = JSX.IntrinsicElements['group'] & {
+    ref?: RefObject<THREE.Object3D>;
+    title?: string;
+    tracks?: TrackInfo[];
 }
 
 const TrackList = ({ ref, title, tracks, ...props }: TrackListProps) => {

@@ -61,11 +61,8 @@ function Scene() {
     };
 
     loadRecordsTracks();
-
-    return () => {
-      console.log('unmount');
-    }
   }, [setPercent]);
+
 
   const handleOnOpened = useCallback(() => {
     setCoverOpened(true);
@@ -79,10 +76,10 @@ function Scene() {
       {/* </Bounds> */}
 
       <group>
-        <Cover position={[0, 0.15, -0.6]} onOpened={handleOnOpened} />
+        <Cover records={RECORDS} position={[0, 0.15, -0.6]} onOpened={handleOnOpened} />
         <PLayer position={[0, 0, 1]} records={coverOpened ? records : []} />
         <Table />
-        <Shelf position={[0, -0.01, -0.41]} />
+        <Shelf position={[0, -0.003, -0.41]} />
         <Carpet />
       </group>
       {/* <Stage intensity={0.1} shadows="contact" environment="warehouse" /> */}

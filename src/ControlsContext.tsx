@@ -11,7 +11,7 @@ function ControlsProvider({ children }) {
             <OrbitControls
                 makeDefault
                 enabled={enabled}
-                minDistance={0.3}
+                minDistance={0.2}
                 maxDistance={1}
             />
             {children}

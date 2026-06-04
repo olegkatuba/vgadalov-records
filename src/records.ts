@@ -172,7 +172,7 @@ const recordThree: RecordInfo = {
                 "path": "./tracks/najjk-borzov-loshadka.mp3"
             },
             {
-                "name": "Владислав",
+                "name": "What Is Love",
                 "author": "Haddaway",
                 description: "Антон: Есть песня What Is Love, начиная с универа когда включалась эта песня, все оборачивались на Влада по понятной причине 😁 Поэтому тоже теперь ассоциируется с Владиком",
                 "path": "./tracks/Haddaway - What Is Love.mp3"

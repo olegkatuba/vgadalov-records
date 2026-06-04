@@ -177,7 +177,7 @@ export default function PLayer({ records: recordsProp }: PLayerProps) {
                   recordsRef.current[i] = ref;
                 }}
                 parent={recordPositions[i] === VinylRecordPosition.Home ? shelfRef : slipmatRef}
-                position={recordPositions[i] === VinylRecordPosition.Home ? [-0.32 + (0.32 * i), 0.004, -0.35] : [0, 0, 0]}
+                position={recordPositions[i] === VinylRecordPosition.Home ? [-0.32 + (0.32 * i), 0.004, -0.42] : [0, 0, 0]}
                 rotation={recordRotations[i]}
                 /* onClick={(e) => {
                   e.stopPropagation();

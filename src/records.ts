@@ -136,7 +136,7 @@ const recordTwo: RecordInfo = {
                 "name": "3-е сентября",
                 "author": "Михаил Шуфутинский",
                 description: "Настя: песня, которая стояла/стоит на звонке белорусского номера, сразу понимаешь, кому звонишь😅 \n\nМакс: Это уже как мем. 2 года у него на звонке стояла.",
-                "path": "./tracks/Михаил_Шуфутинский-3-е_сентября.mp3"
+                "path": "./tracks/Mihail_SHufutinskij_-_3_sentyabrya.mp3"
             },
             {
                 "name": "Viva Kalman",

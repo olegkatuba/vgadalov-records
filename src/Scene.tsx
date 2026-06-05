@@ -1,5 +1,5 @@
-import { Bounds, CameraControls, DragControls, Edges, Environment, Float, GizmoHelper, GizmoViewport, Grid, OrbitControls, Outlines, PerspectiveCamera, PivotControls, Sky, Stage, Stats, Svg, TransformControls } from "@react-three/drei";
-import { memo, useCallback, useContext, useEffect, useRef, useState } from "react";
+import { Bounds, CameraControls, CameraControlsImpl, DragControls, Edges, Environment, Float, GizmoHelper, GizmoViewport, Grid, OrbitControls, Outlines, PerspectiveCamera, PivotControls, Sky, Stage, Stats, Svg, TransformControls } from "@react-three/drei";
+import { memo, useCallback, useContext, useEffect, useRef, useState, type JSX } from "react";
 import { Group, Object3D, Sphere, Vector3, type Mesh, type PerspectiveCamera as PerspectiveCameraType } from "three";
 import PLayer, { type RecordInfo, type Record } from "./Player";
 import { Cover } from "./Cover";
@@ -8,6 +8,13 @@ import { LoadingContext } from "./LoadingContext";
 import { Table } from "./Table";
 import { Shelf } from "./Shelf";
 import { Carpet } from "./Carptet";
+import * as THREE from 'three'
+import type { ThreeEvent } from "@react-three/fiber";
+import { ControlsContext } from "./ControlsContext";
+import { useStrictClick } from "./useStrictClick";
+
+const zoomPosition = [-0.3, 0.15, -0.3];
+const zoomTarget = [0, 0.15, -0.6];
 
 const fallbackTrack = new Howl({
   src: ['./vinyl.mp3'],
@@ -67,19 +74,44 @@ function Scene() {
     setCoverOpened(true);
   }, []);
 
+  const { controls } = useContext(ControlsContext);
+
+  // const cameraControlsRef = useRef<CameraControls>(null)
+
+  const handleResetZoom = (e: ThreeEvent<MouseEvent>) => {
+    e.stopPropagation();
+    if (!controls.current) return
+
+    controls.current.setLookAt(
+      0, 0.2, 0.5,  // Позиция камеры (X, Y, Z) — пододвигаем ближе к левой стороне
+      0, 0, 0, // Куда камере смотреть (Target X, Y, Z) — центр левой панели
+      true             // Плавная анимация (true)
+    )
+  }
+
+  const strictClick = useStrictClick(handleResetZoom);
+
   return (
     <>
-
-      {/* <Bounds fit clip observe margin={1.5}> */}
-      {/* <Table position={[0, 0, 0]} /> */}
-      {/* </Bounds> */}
-
       <group>
-        <Cover records={RECORDS} position={[0, 0.15, -0.6]} onOpened={handleOnOpened} />
+        <Cover
+          records={RECORDS}
+          opened={coverOpened}
+          position={[0, 0.15, -0.6]}
+          onOpened={handleOnOpened}
+        />
         <PLayer position={[0, 0, 1]} records={coverOpened ? records : []} />
         <Table />
         <Shelf position={[0, -0.003, -0.41]} />
         <Carpet />
+        <mesh
+          visible={false}
+          {...strictClick}
+        // onClick={handleResetZoom}
+        >
+          <boxGeometry args={[10, 10, 10, 1, 1, 1]} />
+          <meshStandardMaterial side={THREE.DoubleSide} />
+        </mesh>
       </group>
       {/* <Stage intensity={0.1} shadows="contact" environment="warehouse" /> */}
 
@@ -96,7 +128,7 @@ function Scene() {
 
 
       <PerspectiveCamera
-        fov={50}
+        fov={60}
         makeDefault
         position={[0, 0.4, 0.8]}
         ref={cameraRef}

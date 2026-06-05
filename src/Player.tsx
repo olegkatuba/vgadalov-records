@@ -19,32 +19,10 @@ export enum VinylRecordRotation {
   SideTwo
 }
 
-const loadTracks = (paths: string[]) => {
-  const promises = paths.map((name) =>
-    new Promise<Howl>((res, rej) => {
-      const track = new Howl({
-        src: [name],
-        onload: () => {
-          res(track);
-        },
-        onloaderror: (id, error) => {
-          console.error(name, error);
-          // rej(error);
-          res(new Howl({
-            src: ['./vinyl.mp3'],
-          }))
-        }
-      });
-    })
-  );
-
-  return Promise.all(promises);
-};
-
 const turntableArea = new Sphere(new Vector3(0, 0, 0), 0.12);
 
 export type TrackInfo = {
-  path: string;
+  path?: string;
   fallback?: string;
   name?: string;
   author?: string;

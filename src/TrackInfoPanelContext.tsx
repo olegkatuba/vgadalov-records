@@ -1,4 +1,4 @@
-import { createContext, useRef, useState } from "react";
+import { createContext, useCallback, useRef, useState } from "react";
 import type { TrackInfo } from "./Player";
 
 const TrackInfoPanelContext = createContext<{ track: TrackInfo, setTrack: (track: TrackInfo) => void }>(null);
@@ -9,12 +9,12 @@ export function TrackInfoPanelProvider({ children }) {
     const [track, setTrack] = useState<TrackInfo | null>(null);
     const prevTrack = useRef<TrackInfo | null>(null);
 
-    const handleSetTrack = (track: TrackInfo | null) => {
+    const handleSetTrack = useCallback((track: TrackInfo | null) => {
         setTrack(track);
         if (track) {
             prevTrack.current = track;
         }
-    }
+    }, []);
 
     /* const track = {
       "name": "Come Together",

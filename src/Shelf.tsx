@@ -27,25 +27,19 @@ export function Shelf(props: JSX.IntrinsicElements['group']) {
                     receiveShadow
                     geometry={nodes.Cube005.geometry}
                     material={materials.Wood}
-                >
-                    <primitive object={materials.Wood} attach="material" side={THREE.FrontSide} />
-                </mesh>
+                />
                 <mesh
                     castShadow
                     receiveShadow
                     geometry={nodes.Cube005_1.geometry}
                     material={materials.Metal}
-                >
-                    <primitive object={materials.Metal} attach="material" side={THREE.FrontSide} />
-                </mesh>
+                />
                 <mesh
                     castShadow
                     receiveShadow
                     geometry={nodes.Cube005_2.geometry}
                     material={materials.Wall}
-                >
-                    <primitive object={materials.Wall} attach="material" side={THREE.FrontSide} />
-                </mesh>
+                />
             </group>
         </group>
     )

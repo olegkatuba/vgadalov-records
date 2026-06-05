@@ -1,23 +1,88 @@
 import * as THREE from 'three'
-import React, { useContext, useEffect, useMemo, useRef, useState, type RefObject } from 'react'
+import React, { constructor, useContext, useEffect, useMemo, useRef, useState, type RefObject } from 'react'
 import { CameraControls, OrbitControls, useGLTF, DragControls, useBounds, Decal, useTexture } from '@react-three/drei'
 import { useFrame, useThree, type ThreeElements, type ThreeEvent } from '@react-three/fiber';
 import { clamp, degToRad, lerp, radToDeg } from 'three/src/math/MathUtils.js';
-import { Howl, Howler } from 'howler';
+import { Howl, Howler, type HowlOptions } from 'howler';
 import { Mesh, Vector3 } from 'three';
 import { type GLTF } from 'three-stdlib';
-import { VinylRecord } from './VinylRecord';
 import type { Track } from './Player';
 import { easing } from 'maath';
 import { ControlsContext } from './ControlsContext';
 import { TrackInfoPanelContext } from './TrackInfoPanelContext';
 
+const startSinenceDuration = 15_000;
+
+class Sound extends Howl {
+    sprite: string;
+    start: number;
+    dur: number;
+    id: number;
+
+    constructor({ start, duration, ...params }: HowlOptions & { start: number, duration: number }) {
+        super({
+            ...params, sprite: {
+                sprite: [start, duration, params.loop],
+            }
+        });
+        this.sprite = 'sprite';
+        this.start = start;
+        this.dur = duration;
+    }
+
+    play(spriteOrId?: string | number): number {
+        this.id = super.play(spriteOrId || this.sprite);
+        return;
+    }
+
+    duration(id?: number): number {
+        return this.dur / 1000;
+    }
+
+    seek(): number;
+    seek(seek: number): this;
+    seek(seek?: number): number | this {
+        // this.play();
+        // this.pause();
+        console.log(seek);
+        if (seek === undefined) {
+            return super.seek(this.id);
+        }
+        return super.seek(seek, this.id);
+    }
+
+}
+
+const vinylSound = new Howl({
+    // src: ['./vinyl-record-noise.mp3'],
+    src: ['./vinyl.mp3'],
+    // volume: 0.3,
+    sprite: {
+        down: [50, 500, false],
+        scratch: [1000, 31000, true],
+        up: [33600, 400, false],
+    }
+});
+
+const silenceSound = new Sound({
+    src: ['./vinyl.mp3'],
+    volume: 0,
+    loop: false,
+    start: 0,
+    duration: startSinenceDuration,
+});
+
+const silenceTrack: Track = {
+    sound: silenceSound
+};
+
 const dragPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
 
 const MAX_ANGLE = degToRad(54);
 const MIN_ANGLE = degToRad(0);
-const MAX_MUSIC_ANGLE = degToRad(50.8);
-const MIN_MUSIC_ANGLE = degToRad(31.3);
+const MAX_MUSIC_ANGLE = degToRad(50.3);
+// const MIN_MUSIC_ANGLE = degToRad(31.3);
+const MIN_MUSIC_ANGLE = degToRad(30.3);
 
 const ROTATION_SPEED_IN_MINUTES = 33 + 1 / 3;
 
@@ -131,9 +196,9 @@ export type TurntableProps = Omit<
 export function Turntable({ children, trackList: trackListProp = [], slipmatRef, /* onRecordDragEnd, */ onClick, ...props }: TurntableProps) {
     const { nodes, materials } = useGLTF('/turntable.glb') as unknown as GLTFResult;
 
-    const trackList = useMemo(() => trackListProp || [], [trackListProp]);
+    const trackList = useMemo(() => trackListProp.length ? [silenceTrack, ...trackListProp] : [], [trackListProp]);
 
-    const trackInfoPanel = useContext(TrackInfoPanelContext)
+    const { setTrack } = useContext(TrackInfoPanelContext)
 
     const [isPowerOn, setIsPowerOn] = useState(false);
     const [isRecordBlocked, setIsRecordBlocked] = useState(false);
@@ -164,7 +229,7 @@ export function Turntable({ children, trackList: trackListProp = [], slipmatRef,
 
     const tracks = useMemo(() => trackList.map(({ sound }) => sound), [trackList]);
 
-    const tracksDurations = useMemo(() => tracks.map(track => track?.duration() ?? 1), [tracks]);
+    const tracksDurations = useMemo(() => tracks.map(track => track?.duration() ?? 0), [tracks]);
     const totalDuration = useMemo(() => tracksDurations.reduce((total, duration) => total + duration, 0), [tracksDurations]);
     const trackStartsAt = useMemo(() => {
         return tracksDurations.reduce<number[]>((parts, duration, i) => {
@@ -176,10 +241,10 @@ export function Turntable({ children, trackList: trackListProp = [], slipmatRef,
 
     useEffect(() => {
         tracks.map((track, i) => {
+            // Last track
             if (i >= tracks.length - 1) {
                 return;
             }
-
 
             track.on('end', (e) => {
                 if (currentTrack.current === tracks.at(i + 1)) {
@@ -189,29 +254,29 @@ export function Turntable({ children, trackList: trackListProp = [], slipmatRef,
                 currentTrack.current = tracks.at(i + 1);
                 currentTrack.current.seek(0);
                 currentTrack.current.play();
-                trackInfoPanel.setTrack(trackList.at(i + 1));
+                setTrack(trackList.at(i + 1));
             });
         });
-    }, [trackInfoPanel, trackList, tracks]);
 
-    const vinylSound = useMemo(() => {
-        return new Howl({
-            // src: ['./vinyl-record-noise.mp3'],
-            src: ['./vinyl.mp3'],
-            // volume: 0.3,
-            loop: true,
-        });
-    }, []);
+        return () => {
+            currentTrack.current = null;
+            tracks.map((track) => {
+                track.off();
+            });
+        };
+    }, [setTrack, trackList, tracks]);
+
 
     useEffect(() => {
-        if (isPowerOn) {
-            currentTrack.current?.play();
-            vinylSound?.play();
-        } else {
+        if (isPowerOn && currentTrack.current) {
+            currentTrack.current.play();
+            vinylSound.play('scratch');
+        } else if (currentTrack.current?.playing()) {
             currentTrack.current?.stop();
             vinylSound?.stop();
+            vinylSound.play('up');
         }
-    }, [isPowerOn, vinylSound]);
+    }, [isPowerOn]);
 
     /* useFrame(() => {
         if (isPowerOn && !isOnDrag && currentTrack.current && currentTrack.current.playing()) {
@@ -232,17 +297,32 @@ export function Turntable({ children, trackList: trackListProp = [], slipmatRef,
         e.target.setPointerCapture(e.pointerId);
         setIsOnDrag(true);
         setEnabled(false);
-        trackInfoPanel.setTrack(null);
-        currentTrack.current?.pause();
-        vinylSound.stop();
+        setTrack(null);
+        console.log(currentTrack.current?.playing());
+        if (currentTrack.current?.playing()) {
+            currentTrack.current?.stop();
+            vinylSound.stop();
+            vinylSound.play('up');
+            currentTrack.current = null;
+        }
     };
 
     useFrame((state, delta) => {
+        const shift = degToRad(1);
         if (isPowerOn && !isOnDrag && currentTrack.current && currentTrack.current.playing()) {
-            // setTonarmAngle(sound.seek() / sound.duration() * -degToRad((MAX_MUSIC_ANGLE - MIN_MUSIC_ANGLE)) - degToRad(MIN_MUSIC_ANGLE));
             const trackIndex = tracks.indexOf(currentTrack.current);
-            const tonarmAngle = (trackStartsAt[trackIndex] + currentTrack.current.seek()) / totalDuration * -(MAX_MUSIC_ANGLE - MIN_MUSIC_ANGLE) - MIN_MUSIC_ANGLE;
-            easing.dampE(tonarmRef.current.rotation, [degToRad(2.3), tonarmAngle + degToRad(0.8), 0], 0.1, delta);
+            const speed = 5;
+            let seek;
+            if (trackIndex === 0) {
+                seek = currentTrack.current.seek() * speed;
+            } else {
+                seek = currentTrack.current.seek() + tracksDurations[0] * speed - 1;
+            }
+            // console.log(seek);
+            // setTonarmAngle(sound.seek() / sound.duration() * -degToRad((MAX_MUSIC_ANGLE - MIN_MUSIC_ANGLE)) - degToRad(MIN_MUSIC_ANGLE));
+
+            const tonarmAngle = (trackStartsAt[trackIndex] + seek) / totalDuration * -(MAX_MUSIC_ANGLE - MIN_MUSIC_ANGLE) - MIN_MUSIC_ANGLE;
+            easing.dampE(tonarmRef.current.rotation, [degToRad(2.3), tonarmAngle + shift, 0], 0.1, delta);
             // tonarmRef.current.rotation.set(degToRad(2.3), tonarmAngle, 0);
             // setTonarmAngle((trackStartsAt[trackIndex] + currentTrack.current.seek()) / totalDuration * -(MAX_MUSIC_ANGLE - MIN_MUSIC_ANGLE) - MIN_MUSIC_ANGLE);
         } else if (isOnDrag && tonarmRef.current) {
@@ -263,7 +343,7 @@ export function Turntable({ children, trackList: trackListProp = [], slipmatRef,
 
             const angle = Math.atan(Math.abs(wp.x - dragPoint.x) / Math.abs(wp.z - dragPoint.z));
             const clampedAngle = clamp(-angle, -MAX_ANGLE, MIN_ANGLE);
-            easing.dampE(tonarmRef.current.rotation, [0, clampedAngle + degToRad(0.8), 0], 0.1, delta);
+            easing.dampE(tonarmRef.current.rotation, [0, clampedAngle + shift, 0], 0.1, delta);
         }
     })
 
@@ -290,20 +370,29 @@ export function Turntable({ children, trackList: trackListProp = [], slipmatRef,
         e.stopPropagation();
         e.target.releasePointerCapture(e.pointerId);
 
+        currentTrack.current = null;
+
         if (!isOnDrag) {
             return;
         }
+
 
         setIsOnDrag(false);
         setEnabled(true);
         console.log('onDragEnd');
 
-        const tonarmAngle = tonarmRef.current.rotation.y;
+        let tonarmAngle = tonarmRef.current.rotation.y;
 
         if (-tonarmAngle < MIN_MUSIC_ANGLE) {
             setIsRecordBlocked(false);
         } else {
             setIsRecordBlocked(true);
+        }
+
+        console.log(tonarmAngle, MIN_MUSIC_ANGLE, degToRad(3));
+
+        if (-tonarmAngle < MIN_MUSIC_ANGLE && Math.abs(-tonarmAngle - MIN_MUSIC_ANGLE) < degToRad(2)) {
+            tonarmAngle = -MIN_MUSIC_ANGLE
         }
 
         if (-tonarmAngle < MIN_MUSIC_ANGLE) {
@@ -313,9 +402,9 @@ export function Turntable({ children, trackList: trackListProp = [], slipmatRef,
         const trackSeek = (-tonarmAngle - MIN_MUSIC_ANGLE) / (MAX_MUSIC_ANGLE - MIN_MUSIC_ANGLE);
 
         // console.log(trackSeek);
-        const totalDuration = tracks.reduce((duration, track) => {
+        /* const totalDuration = tracks.reduce((duration, track) => {
             return duration + track.duration();
-        }, 0);
+        }, 0); */
 
         const duration = totalDuration * trackSeek;
 
@@ -335,11 +424,14 @@ export function Turntable({ children, trackList: trackListProp = [], slipmatRef,
             return;
         }
 
-        trackInfoPanel.setTrack(trackList.at(i));
+        if (trackList.at(i).name) {
+            setTrack(trackList.at(i));
+        }
 
-        // sound.seek(trackSeek * sound.duration());
         currentTrack.current.play();
-        vinylSound.play();
+
+        vinylSound.play('scratch');
+        vinylSound.play('up');
     };
 
     const logoTexture = useTexture('./rega-planar-two-logo.png')

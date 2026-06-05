@@ -3,7 +3,6 @@ import React, { Fragment, memo, useContext, useEffect, useMemo, useRef, useState
 import { useGLTF, useAnimations, useBounds, Html, Text } from '@react-three/drei'
 import type { GLTF } from 'three-stdlib'
 import type { ThreeEvent } from '@react-three/fiber'
-import { FocusContext } from './FocusContext'
 import type { RecordInfo, TrackInfo } from './Player'
 import { useStrictClick } from './useStrictClick'
 import { ControlsContext } from './ControlsContext'

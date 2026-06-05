@@ -1,4 +1,4 @@
-import { Bounds, CameraControls, CameraControlsImpl, DragControls, Edges, Environment, Float, GizmoHelper, GizmoViewport, Grid, OrbitControls, Outlines, PerspectiveCamera, PivotControls, Sky, Stage, Stats, Svg, TransformControls } from "@react-three/drei";
+import { Backdrop, Bounds, CameraControls, CameraControlsImpl, ContactShadows, DragControls, Edges, Environment, Float, GizmoHelper, GizmoViewport, Grid, OrbitControls, Outlines, PerspectiveCamera, PivotControls, Sky, Stage, Stats, Svg, TransformControls } from "@react-three/drei";
 import { memo, useCallback, useContext, useEffect, useRef, useState, type JSX } from "react";
 import { Group, Object3D, Sphere, Vector3, type Mesh, type PerspectiveCamera as PerspectiveCameraType } from "three";
 import PLayer, { type RecordInfo, type Record } from "./Player";
@@ -12,9 +12,6 @@ import * as THREE from 'three'
 import type { ThreeEvent } from "@react-three/fiber";
 import { ControlsContext } from "./ControlsContext";
 import { useStrictClick } from "./useStrictClick";
-
-const zoomPosition = [-0.3, 0.15, -0.3];
-const zoomTarget = [0, 0.15, -0.6];
 
 const fallbackTrack = new Howl({
   src: ['./vinyl.mp3'],
@@ -101,16 +98,23 @@ function Scene() {
           onOpened={handleOnOpened}
         />
         <PLayer position={[0, 0, 1]} records={coverOpened ? records : []} />
+        <ContactShadows
+          position={[0, -0.51, 0]}
+          opacity={0.5}
+          scale={3}
+          blur={2.5}
+          far={5}
+          resolution={1024}
+        />
         <Table />
         <Shelf position={[0, -0.003, -0.41]} />
-        <Carpet />
+        {/* <Carpet /> */}
         <mesh
-          visible={false}
           {...strictClick}
-        // onClick={handleResetZoom}
         >
-          <boxGeometry args={[10, 10, 10, 1, 1, 1]} />
-          <meshStandardMaterial side={THREE.DoubleSide} />
+          {/* <boxGeometry args={[10, 10, 10, 1, 1, 1]} /> */}
+          <sphereGeometry args={[8, 16, 16]} />
+          <meshStandardMaterial color="#ccc" side={THREE.DoubleSide} roughness={1} metalness={1} />
         </mesh>
       </group>
       {/* <Stage intensity={0.1} shadows="contact" environment="warehouse" /> */}

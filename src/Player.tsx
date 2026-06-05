@@ -6,8 +6,6 @@ import { VinylRecord } from "./VinylRecord";
 import { Suspense, useContext, useEffect, useMemo, useRef, useState, type Ref } from "react";
 import { Turntable } from "./Turntable";
 import { Group, Object3D, Sphere, Vector3, type Mesh, type PerspectiveCamera as PerspectiveCameraType } from "three";
-import { FocusContext } from "./FocusContext";
-import { LoadingContext } from "./LoadingContext";
 
 export enum VinylRecordPosition {
   Home,

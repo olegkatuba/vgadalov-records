@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import React, { constructor, useContext, useEffect, useMemo, useRef, useState, type RefObject } from 'react'
+import React, { constructor, useCallback, useContext, useEffect, useMemo, useRef, useState, type RefObject } from 'react'
 import { CameraControls, OrbitControls, useGLTF, DragControls, useBounds, Decal, useTexture, Html } from '@react-three/drei'
 import { useFrame, useThree, type ThreeElements, type ThreeEvent } from '@react-three/fiber';
 import { clamp, degToRad, lerp, radToDeg } from 'three/src/math/MathUtils.js';
@@ -44,7 +44,6 @@ class Sound extends Howl {
     seek(seek?: number): number | this {
         // this.play();
         // this.pause();
-        console.log(seek);
         if (seek === undefined) {
             return super.seek(this.id);
         }
@@ -239,6 +238,34 @@ export function Turntable({ children, trackList: trackListProp = [], slipmatRef,
         }, []);
     }, [tracksDurations]);
 
+    const playTrack = useCallback((index) => {
+        if (index > tracks.length - 1) {
+            return;
+        }
+        const trackIndex = Math.max(1, index);
+        currentTrack.current.stop();
+        currentTrack.current = tracks.at(trackIndex);
+        currentTrack.current.seek(0);
+        currentTrack.current.play();
+        setTrack(trackList.at(trackIndex));
+
+    }, [setTrack, trackList, tracks]);
+
+    const prevTrack = useCallback(() => {
+        const trackIndex = tracks.indexOf(currentTrack.current);
+
+        if (currentTrack.current.seek() > 3) {
+            playTrack(trackIndex);
+        } else {
+            playTrack(trackIndex - 1);
+        }
+    }, [playTrack, tracks]);
+
+    const nextTrack = useCallback(() => {
+        const trackIndex = tracks.indexOf(currentTrack.current);
+        playTrack(trackIndex + 1);
+    }, [playTrack, tracks]);
+
     useEffect(() => {
         tracks.map((track, i) => {
             // Last track
@@ -247,14 +274,7 @@ export function Turntable({ children, trackList: trackListProp = [], slipmatRef,
             }
 
             track.on('end', (e) => {
-                if (currentTrack.current === tracks.at(i + 1)) {
-                    return;
-                }
-                console.log('end', e);
-                currentTrack.current = tracks.at(i + 1);
-                currentTrack.current.seek(0);
-                currentTrack.current.play();
-                setTrack(trackList.at(i + 1));
+                nextTrack();
             });
         });
 
@@ -265,7 +285,7 @@ export function Turntable({ children, trackList: trackListProp = [], slipmatRef,
                 track.off();
             });
         };
-    }, [setTrack, trackList, tracks]);
+    }, [nextTrack, setTrack, trackList, tracks]);
 
 
     useEffect(() => {
@@ -299,7 +319,6 @@ export function Turntable({ children, trackList: trackListProp = [], slipmatRef,
         setIsOnDrag(true);
         setEnabled(false);
         setTrack(null);
-        console.log(currentTrack.current?.playing());
         if (currentTrack.current?.playing()) {
             currentTrack.current?.stop();
             vinylSound.stop();
@@ -380,7 +399,6 @@ export function Turntable({ children, trackList: trackListProp = [], slipmatRef,
 
         setIsOnDrag(false);
         setEnabled(true);
-        console.log('onDragEnd');
 
         let tonarmAngle = tonarmRef.current.rotation.y;
 
@@ -389,8 +407,6 @@ export function Turntable({ children, trackList: trackListProp = [], slipmatRef,
         } else {
             setIsRecordBlocked(true);
         }
-
-        console.log(tonarmAngle, MIN_MUSIC_ANGLE, degToRad(3));
 
         if (-tonarmAngle < MIN_MUSIC_ANGLE && Math.abs(-tonarmAngle - MIN_MUSIC_ANGLE) < degToRad(2)) {
             tonarmAngle = -MIN_MUSIC_ANGLE
@@ -437,44 +453,25 @@ export function Turntable({ children, trackList: trackListProp = [], slipmatRef,
 
     const logoTexture = useTexture('./rega-planar-two-logo.png');
 
-    const trackIndex = tracks.indexOf(currentTrack.current);
+    useEffect(() => {
+        const handleNextTrack = () => {
+            nextTrack();
+        };
+
+        const handlePrevTrack = () => {
+            prevTrack();
+        };
+
+        window.addEventListener('player-prev-track', handlePrevTrack);
+        window.addEventListener('player-next-track', handleNextTrack);
+        return () => {
+            window.removeEventListener('player-prev-track', handlePrevTrack);
+            window.removeEventListener('player-next-track', handleNextTrack);
+        };
+    }, [nextTrack, prevTrack]);
 
     return (
         <>
-            {/* <Html transform occlude>
-                <div className="player-hud" style={{ opacity: currentTrack.current ? 1 : 0 }}>
-                    <div className="hud-header">
-                        <svg className="icon-play-mini" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M8 5v14l11-7z" />
-                        </svg>
-                        <span>NOW PLAYING</span>
-                    </div>
-
-                    <div className="track-meta">
-                        <h1 className="track-title">{trackList[trackIndex]?.name}</h1>
-                        <h2 className="track-artist">{trackList[trackIndex]?.author}</h2>
-                    </div>
-
-                    <div className="player-controls">
-                        <button className="control-btn">
-                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z" /></svg>
-                        </button>
-                        <button className="control-btn main-btn">
-                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" /></svg>
-                        </button>
-                        <button className="control-btn">
-                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6z" /></svg>
-                        </button>
-                    </div>
-
-                    {!!trackList[trackIndex]?.description && (
-                        <p className="track-description">
-                            {trackList[trackIndex]?.description}
-                        </p>
-                    )}
-
-                </div>
-            </Html> */}
             <group {...props} dispose={null}
                 onPointerDown={e => e.stopPropagation()}
                 onPointerMove={e => e.stopPropagation()}

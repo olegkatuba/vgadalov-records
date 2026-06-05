@@ -23,6 +23,22 @@ export function TrackInfoPanelProvider({ children }) {
       "path": "./sideOne/01 Come Together.mp3"
     } */
 
+    const handlePrevTrack = useCallback(() => {
+        window.dispatchEvent(new CustomEvent('player-prev-track'));
+    }, []);
+
+    const handlePlayTrack = useCallback(() => {
+        window.dispatchEvent(new CustomEvent('player-play'));
+    }, []);
+
+    const handlePauseTrack = useCallback(() => {
+        window.dispatchEvent(new CustomEvent('player-pause'));
+    }, []);
+
+    const handleNextTrack = useCallback(() => {
+        window.dispatchEvent(new CustomEvent('player-next-track'));
+    }, []);
+
     const displayTrack = track || prevTrack.current;
 
     return (
@@ -43,6 +59,18 @@ export function TrackInfoPanelProvider({ children }) {
                             <h2 className="track-artist">{displayTrack?.author}</h2>
                         </div>
 
+                        <div className="player-controls">
+                            <button className="control-btn" onClick={handlePrevTrack}>
+                                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z" /></svg>
+                            </button>
+                            {/* <button className="control-btn main-btn">
+                                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" /></svg>
+                            </button> */}
+                            <button className="control-btn" onClick={handleNextTrack}>
+                                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6z" /></svg>
+                            </button>
+                        </div>
+
                         {!!displayTrack?.description && (
                             <p className="track-description">
                                 {displayTrack?.description}
@@ -50,13 +78,6 @@ export function TrackInfoPanelProvider({ children }) {
                         )}
 
                     </div>
-                    {/* <div className="track-info-panel">
-            <div className="track-info">
-              <div className="track-name">{track?.name}</div>
-              <div className="artist">{track?.author}</div>
-              <div className="track-description">{track?.description}</div>
-            </div>
-          </div> */}
                 </>
             </TrackInfoPanelContext>
         </>

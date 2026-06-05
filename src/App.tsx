@@ -10,7 +10,7 @@ export default function App() {
     <>
       <TrackInfoPanelProvider>
         <LoadingProvider>
-          <Canvas gl={{ antialias: true }} dpr={[1, 1]} gl={{ powerPreference: "low-power" }}  >
+          <Canvas gl={{ antialias: true, powerPreference: "low-power" }} dpr={[1, 1]} >
             <ControlsProvider>
               <Scene />
             </ControlsProvider>

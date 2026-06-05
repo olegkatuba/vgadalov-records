@@ -1,42 +1,3 @@
-/* .track-info-panel {
-    width: 500px;
-    height: 100vh;
-    background: linear-gradient(to right, #5FC3E400, #151417ee);
-    position: fixed;
-    top: 0;
-    right: 0;
-    color: white;
-    z-index: 9999;
-    pointer-events: none;
-}
-
-.track-info {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    margin: 40% 10px;
-}
-
-.track-name {
-    font-size: 4rem;
-}
-
-.artist {
-    font-size: 3rem;
-}
-
-.track-description {
-    font-size: 2rem;
-    pointer-events: all;
-    overflow: auto;
-    max-height: 500px;
-}
- */
-
-
-
-
-
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
 
 /* Контейнер панели */
@@ -108,6 +69,45 @@
     /* Выравнивание по правому краю как на макете */
     opacity: 0.9;
     color: #ffffff;
+
+}
+
+/* Прогресс-бар */
+.progress-container {
+    margin-bottom: 24px;
+}
+
+.progress-timeline {
+    position: relative;
+    height: 3px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 2px;
+    cursor: pointer;
+}
+
+.progress-fill {
+    height: 100%;
+    background: #ffffff;
+    border-radius: 2px;
+}
+
+.progress-pin {
+    position: absolute;
+    top: 50%;
+    width: 8px;
+    height: 8px;
+    background: #ffffff;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 10px #ffffff;
+}
+
+.progress-time {
+    text-align: right;
+    font-size: 11px;
+    margin-top: 8px;
+    opacity: 0.6;
+    font-weight: 400;
 }
 
 /* Кнопки управления */
@@ -116,7 +116,36 @@
     justify-content: center;
     align-items: center;
     gap: 24px;
-    margin-bottom: 28px;
+}
+
+.control-btn {
+    pointer-events: auto;
+    background: none;
+    border: none;
+    color: #ffffff;
+    width: 34px;
+    height: 34px;
+    padding: 5px;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: opacity 0.2s, transform 0.2s;
+}
+
+.control-btn:hover {
+    opacity: 1;
+    transform: scale(1.05);
+}
+
+.control-btn.main-btn {
+    width: 42px;
+    height: 42px;
+    opacity: 1;
+}
+
+.control-btn.loop-btn {
+    width: 18px;
+    height: 18px;
+    opacity: 0.5;
 }
 
 /* Описание под треком */
@@ -128,5 +157,4 @@
     margin: 0;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
     padding-top: 16px;
-    color: #ffffff;
 }
